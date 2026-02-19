@@ -787,45 +787,45 @@ impl DepManager {
                 .and_then(|info| {
                   let version_resolver =
                     npm_version_resolver.get_for_package(&info);
-                let latest_tag = info.dist_tags.get("latest")?;
-                let can_use_latest = version_resolver
-                  .version_req_satisfies_and_matches_newest_dependency_date(
-                    &semver_req.version_req,
-                    latest_tag,
-                  )
-                  .ok()?;
+                  let latest_tag = info.dist_tags.get("latest")?;
+                  let can_use_latest = version_resolver
+                    .version_req_satisfies_and_matches_newest_dependency_date(
+                      &semver_req.version_req,
+                      latest_tag,
+                    )
+                    .ok()?;
 
-                if can_use_latest {
-                  semver_compatible = Some(PackageNv {
-                    name: semver_req.name.clone(),
-                    version: latest_tag.clone(),
-                  });
-                  return Some(latest_tag.clone());
-                }
+                  if can_use_latest {
+                    semver_compatible = Some(PackageNv {
+                      name: semver_req.name.clone(),
+                      version: latest_tag.clone(),
+                    });
+                    return Some(latest_tag.clone());
+                  }
 
-                let lower_bound = &semver_compatible.as_ref()?.version;
-                let latest_matches_newest_dep_date =
-                  version_resolver.matches_newest_dependency_date(latest_tag);
-                if latest_matches_newest_dep_date && latest_tag >= lower_bound {
-                  Some(latest_tag.clone())
-                } else {
-                  latest_version(
-                    if latest_matches_newest_dep_date {
-                      Some(latest_tag)
-                    } else {
-                      None
-                    },
-                    version_resolver.applicable_version_infos().filter_map(
-                      |version_info| {
-                        if version_info.deprecated.is_none() {
-                          Some(&version_info.version)
-                        } else {
-                          None
-                        }
+                  let lower_bound = &semver_compatible.as_ref()?.version;
+                  let latest_matches_newest_dep_date =
+                    version_resolver.matches_newest_dependency_date(latest_tag);
+                  if latest_matches_newest_dep_date && latest_tag >= lower_bound {
+                    Some(latest_tag.clone())
+                  } else {
+                    latest_version(
+                      if latest_matches_newest_dep_date {
+                        Some(latest_tag)
+                      } else {
+                        None
                       },
-                    ),
-                  )
-                }
+                      version_resolver.applicable_version_infos().filter_map(
+                        |version_info| {
+                          if version_info.deprecated.is_none() {
+                            Some(&version_info.version)
+                          } else {
+                            None
+                          }
+                        },
+                      ),
+                    )
+                  }
               })
               .map(|version| PackageNv {
                 name: semver_req.name.clone(),
@@ -857,8 +857,8 @@ impl DepManager {
                 .and_then(|info| {
                   let version_resolver =
                     jsr_fetch_resolver.version_resolver_for_package(&semver_req.name, &info);
-                let lower_bound = &semver_compatible.as_ref()?.version;
-                latest_version(
+                  let lower_bound = &semver_compatible.as_ref()?.version;
+                  latest_version(
                   Some(lower_bound),
                   info.versions.iter().filter_map(|(version, version_info)| {
                     if !version_info.yanked
